@@ -43,6 +43,8 @@
   ga('ecommerce:send');
 <% end %>
 <% if tracker %>
-  ga('send', 'pageview', window.location.pathname + window.location.search);
+  <% if !options[:manual] %>
+    ga('send', 'pageview', window.location.pathname + window.location.search);
+  <% end %>
 <% end %>
 </script>
