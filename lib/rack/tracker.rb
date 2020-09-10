@@ -56,15 +56,11 @@ module Rack
     def html?; @headers['Content-Type'] =~ /html/; end
 
     def inject(env, response)
+      duplicated_response = response.dup
       @handlers.each(env) do |handler|
-        # Sub! is enough, in well formed html there's only one head or body tag.
-        # Block syntax need to be used, otherwise backslashes in input will mess the output.
-        # @see http://stackoverflow.com/a/4149087/518204 and https://github.com/railslove/rack-tracker/issues/50
-        response.sub! %r{</#{handler.position}>} do |m|
-          handler.render << m.to_s
-        end
+        handler.inject(duplicated_response)
       end
-      response
+      duplicated_response
     end
 
     class HandlerSet
